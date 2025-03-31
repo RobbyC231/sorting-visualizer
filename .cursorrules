@@ -83,7 +83,7 @@ shared/
 ## UI and Styling
 
 - Use Shadcn UI for components
-- use `npx shadcn add <component-name>` to add new shadcn components
+- use `npx shadcn@latest add <component-name>` to add new shadcn components
 - Implement Tailwind CSS for styling
 - When adding new shadcn component, document the installation command
 

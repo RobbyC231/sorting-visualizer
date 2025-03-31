@@ -1,5 +1,6 @@
 import './App.css';
 import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import {
   Select,
   SelectContent,
@@ -18,7 +19,7 @@ const SORTING_ALGORITHMS = [
 
 function App() {
   return (
-    <div className="flex flex-col items-center justify-center min-h-svh gap-4">
+    <div className="flex flex-row items-center justify-center min-h-svh gap-4">
       <Select>
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Select algorithm" />
@@ -31,6 +32,7 @@ function App() {
           ))}
         </SelectContent>
       </Select>
+      <Input type="number" min="1" max="400" className="w-[180px]" placeholder="Enter array size" />
       <Button onClick={() => console.log('clicked')}>Click me</Button>
     </div>
   );
