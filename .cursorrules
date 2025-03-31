@@ -3,15 +3,20 @@
 Every time you choose to apply a rule(s), explicitly state the rule(s) in the output. You can abbreviate the rule description to a single word or phrase.
 
 ## Project Context
-This project will be a UI tool which demonstrate the speed of different sorting algorithems 
-- it will have a UI piece which will let you choose which sorting algorithem you want to use. This UI will also have a slider to adjust the speed at which the sorting algorithem runs at.
+
+This project will be a UI tool which demonstrate the speed of different sorting algorithms
+
+- it will have a UI piece which will let you choose which sorting algorithm you want to use. This UI will also have a slider to adjust the speed at which the sorting algorithm runs at.
+- i am using the following github project as an example https://github.com/WebDevSimplified/sorting-algorithms-visualized
 
 ## Code Style and Structure
+
 - Write concise, technical TypeScript code with accurate examples
 - Use functional and declarative programming patterns; avoid classes
 - Prefer iteration and modularization over code duplication
 - Use descriptive variable names with auxiliary verbs (e.g., isLoading, hasError)
 - Structure repository files as follows:
+
 ```
 server/
 ├── src/
@@ -39,6 +44,7 @@ shared/
 ```
 
 ## Tech Stack
+
 - React
 - TypeScript
 - Tailwind CSS
@@ -46,12 +52,14 @@ shared/
 - Yarn
 
 ## Naming Conventions
+
 - Use lowercase with dashes for directories (e.g., components/form-wizard)
 - Favor named exports for components and utilities
 - Use PascalCase for component files (e.g., VisaForm.tsx)
 - Use camelCase for utility files (e.g., formValidator.ts)
 
 ## TypeScript Usage
+
 - Use TypeScript for all code; prefer interfaces over types
 - Avoid enums; use const objects with 'as const' assertion
 - Use functional components with TypeScript interfaces
@@ -61,34 +69,40 @@ shared/
 - Use explicit return types for all functions
 
 ## State Management
+
 - Use React Context for global state when needed
 - Implement proper cleanup in useEffect hooks
 
 ## Syntax and Formatting
+
 - Use "function" keyword for pure functions
 - Avoid unnecessary curly braces in conditionals
 - Use declarative JSX
 - Implement proper TypeScript discriminated unions for message types
 
 ## UI and Styling
+
 - Use Shadcn UI for components
 - use `npx shadcn add <component-name>` to add new shadcn components
 - Implement Tailwind CSS for styling
 - When adding new shadcn component, document the installation command
 
 ## Error Handling
+
 - Implement proper error boundaries
 - Log errors appropriately for debugging
 - Provide user-friendly error messages
 - Handle network failures gracefully
 
 ## Testing
+
 - Write unit tests for utilities and components
 - Implement E2E tests for critical flows
 - Test across different Chrome versions
 - Test memory usage and performance
 
 ## Security
+
 - Implement Content Security Policy
 - Sanitize user inputs
 - Handle sensitive data properly
@@ -96,7 +110,9 @@ shared/
 - Implement proper CORS handling
 
 ## Git Usage
+
 Commit Message Prefixes:
+
 - "fix:" for bug fixes
 - "feat:" for new features
 - "perf:" for performance improvements
@@ -107,12 +123,14 @@ Commit Message Prefixes:
 - "chore:" for maintenance tasks
 
 Rules:
+
 - Use lowercase for commit messages
 - Keep the summary line concise
 - Include description for non-obvious changes
 - Reference issue numbers when applicable
 
 ## Documentation
+
 - Maintain clear README with setup instructions
 - Document API interactions and data flows
 - Keep manifest.json well-documented
@@ -120,6 +138,7 @@ Rules:
 - Document permission requirements
 
 ## Development Workflow
+
 - Use proper version control
 - Implement proper code review process
 - Test in multiple environments
