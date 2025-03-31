@@ -48,7 +48,12 @@ function App() {
         />
         <span className="text-sm w-12">{speed}x</span>
       </div>
-      <Button onClick={() => console.log('clicked')}>Click me</Button>
+      <div className="flex gap-2">
+        <Button onClick={() => console.log('sort clicked')}>Sort</Button>
+        <Button variant="outline" onClick={() => console.log('randomize clicked')}>
+          Randomize
+        </Button>
+      </div>
     </div>
   );
 }
