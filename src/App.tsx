@@ -23,7 +23,7 @@ function App() {
   const [speed, setSpeed] = useState<number>(1);
 
   return (
-    <div className="flex flex-row items-center justify-center min-h-svh gap-4">
+    <header className="flex flex-row items-center justify-center min-h-svh gap-4">
       <h1 className="text-2xl font-bold mr-8">Sort Visualizer</h1>
       <Select>
         <SelectTrigger className="w-[180px]">
@@ -55,7 +55,7 @@ function App() {
           Randomize
         </Button>
       </div>
-    </div>
+    </header>
   );
 }
 
