@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useReducer } from 'react';
+import { log } from 'console';
 
 const SORTING_ALGORITHMS = [
   { value: 'bubble', label: 'Bubble Sort' },
@@ -24,18 +25,18 @@ type SortingAlgorithm = (typeof SORTING_ALGORITHMS)[number]['value'];
 interface AppState {
   speed: number;
   algorithm: SortingAlgorithm | null;
-  arraySize: number;
+  randomArray: number[];
 }
 
 type AppAction =
   | { type: 'SET_SPEED'; payload: number }
   | { type: 'SET_ALGORITHM'; payload: SortingAlgorithm }
-  | { type: 'SET_ARRAY_SIZE'; payload: number };
+  | { type: 'CHANGE_ARRAY_LENGTH'; payload: number };
 
 const initialState: AppState = {
   speed: 1,
   algorithm: null,
-  arraySize: 50,
+  randomArray: getRandomElements(50),
 };
 
 function appReducer(state: AppState, action: AppAction): AppState {
@@ -44,16 +45,19 @@ function appReducer(state: AppState, action: AppAction): AppState {
       return { ...state, speed: action.payload };
     case 'SET_ALGORITHM':
       return { ...state, algorithm: action.payload };
-    case 'SET_ARRAY_SIZE':
-      return { ...state, arraySize: action.payload };
+    case 'CHANGE_ARRAY_LENGTH':
+      return { ...state, randomArray: getRandomElements(action.payload) };
     default:
       return state;
   }
 }
 
+function getRandomElements(arraySize: number) {
+  return Array.from({ length: arraySize }, () => Math.floor(Math.random() * 100) + 1);
+}
+
 function App() {
   const [state, dispatch] = useReducer(appReducer, initialState);
-
   return (
     <>
       <header className="flex flex-row items-center justify-center min-h-svh gap-4">
@@ -80,8 +84,10 @@ function App() {
           max="400"
           className="w-[180px]"
           placeholder="Enter array size"
-          value={state.arraySize}
-          onChange={(e) => dispatch({ type: 'SET_ARRAY_SIZE', payload: Number(e.target.value) })}
+          value={state.randomArray.length}
+          onChange={(e) =>
+            dispatch({ type: 'CHANGE_ARRAY_LENGTH', payload: Number(e.target.value) })
+          }
         />
         <div className="flex items-center gap-2 w-[200px]">
           <span className="text-sm">Speed:</span>
