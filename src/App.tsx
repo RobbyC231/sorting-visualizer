@@ -8,7 +8,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import { useReducer } from 'react';
+import { useEffect, useReducer } from 'react';
+import { bubbleSortGenerator } from './sortingAlgorithms/bubble';
+import { stat } from 'fs';
 
 const SORTING_ALGORITHMS = [
   { value: 'bubble', label: 'Bubble Sort' },
@@ -22,20 +24,24 @@ type SortingAlgorithm = (typeof SORTING_ALGORITHMS)[number]['value'];
 
 interface AppState {
   speed: number;
-  algorithm: SortingAlgorithm | null;
+  algorithm: SortingAlgorithm;
   randomArray: number[];
+  isSorting: boolean;
+  activeSortingFunction?: Generator<[number[], number[]]>;
 }
 
 type AppAction =
   | { type: 'SET_SPEED'; payload: number }
   | { type: 'SET_ALGORITHM'; payload: SortingAlgorithm }
   | { type: 'CHANGE_ARRAY_LENGTH'; payload: number }
-  | { type: 'RANDOMIZE' };
+  | { type: 'RANDOMIZE' }
+  | { type: 'SORT' };
 
 const initialState: AppState = {
   speed: 1,
-  algorithm: null,
+  algorithm: 'bubble',
   randomArray: getRandomElements(50),
+  isSorting: false,
 };
 
 function appReducer(state: AppState, action: AppAction): AppState {
@@ -48,6 +54,13 @@ function appReducer(state: AppState, action: AppAction): AppState {
       return { ...state, randomArray: getRandomElements(action.payload) };
     case 'RANDOMIZE':
       return { ...state, randomArray: getRandomElements(state.randomArray.length) };
+    case 'SORT':
+      return {
+        ...state,
+        isSorting: true,
+        activeSortingFunction:
+          state.activeSortingFunction ?? getSortingFunction(state.algorithm)(state.randomArray),
+      };
     default:
       return state;
   }
@@ -57,8 +70,48 @@ function getRandomElements(arraySize: number) {
   return Array.from({ length: arraySize }, () => Math.floor(Math.random() * 100) + 1);
 }
 
+function getSortingFunction(algorithm: SortingAlgorithm) {
+  switch (algorithm) {
+    case 'bubble':
+      return bubbleSortGenerator;
+    default:
+      throw new Error(`Invalid algorithm: ${algorithm}`);
+  }
+}
+
 function App() {
   const [state, dispatch] = useReducer(appReducer, initialState);
+
+  //   useEffect(() => {
+  //     let cancel = false;
+  //     let timeout: NodeJS.Timeout;
+  //     async function inner() {
+  //       while (activeSortingFunction != null && isSorting && !cancel) {
+  //         const {
+  //           done,
+  //           value: [active, sorted],
+  //         } = activeSortingFunction.next();
+
+  //         if (done) {
+  //           dispatch({ type: 'FINISH_SORTING' });
+  //           return;
+  //         }
+
+  //         dispatch({ type: 'SET_INDICES', payload: { active, sorted } });
+  //         await new Promise<void>((resolve) => {
+  //           timeout = setTimeout(resolve, 1000 / OPERATIONS_PER_SECOND / sortingSpeed);
+  //         });
+  //       }
+  //     }
+
+  //     inner();
+
+  //     return () => {
+  //       clearTimeout(timeout);
+  //       cancel = true;
+  //     };
+  //   }, [activeSortingFunction, sortingSpeed, isSorting]);
+
   return (
     <div className="flex flex-col h-screen">
       <header className="w-full bg-white border-b shadow-sm py-4 px-6 mb-4">
@@ -66,6 +119,7 @@ function App() {
           <h1 className="text-xl font-bold">Sort Visualizer</h1>
           <div className="flex items-center gap-4">
             <Select
+              value={state.algorithm}
               onValueChange={(value) =>
                 dispatch({ type: 'SET_ALGORITHM', payload: value as SortingAlgorithm })
               }
