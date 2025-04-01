@@ -11,6 +11,7 @@ import {
 import { useEffect, useReducer } from 'react';
 import { bubbleSortGenerator } from './sortingAlgorithms/bubble';
 import { stat } from 'fs';
+import { log } from 'console';
 
 const SORTING_ALGORITHMS = [
   { value: 'bubble', label: 'Bubble Sort' },
@@ -38,6 +39,7 @@ type AppAction =
   | { type: 'CHANGE_ARRAY_LENGTH'; payload: number }
   | { type: 'RANDOMIZE' }
   | { type: 'SORT' }
+  | { type: 'STOP' }
   | { type: 'FINISH_SORTING' }
   | { type: 'SET_INDICES'; payload: { active: number[]; sorted: number[] } };
 
@@ -75,6 +77,8 @@ function appReducer(state: AppState, action: AppAction): AppState {
         sortedIndices: action.payload.sorted,
         activeIndices: action.payload.active,
       };
+    case 'STOP':
+      return { ...state, isSorting: false };
     default:
       return state;
   }
@@ -95,6 +99,7 @@ function getSortingFunction(algorithm: SortingAlgorithm) {
 
 function App() {
   const [state, dispatch] = useReducer(appReducer, initialState);
+  console.log({ state });
 
   useEffect(() => {
     async function sort() {
@@ -190,7 +195,12 @@ function App() {
               <span className="text-sm w-12">{state.speed}x</span>
             </div>
             <div className="flex gap-2">
-              <Button onClick={() => console.log('sort clicked')}>Sort</Button>
+              <Button
+                onClick={() => dispatch({ type: state.isSorting ? 'STOP' : 'SORT' })}
+                variant={state.isSorting ? 'destructive' : 'default'}
+              >
+                {state.isSorting ? 'Stop' : 'Sort'}
+              </Button>
               <Button variant="outline" onClick={() => dispatch({ type: 'RANDOMIZE' })}>
                 Randomize
               </Button>
