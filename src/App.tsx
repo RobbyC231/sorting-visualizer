@@ -24,6 +24,7 @@ function App() {
 
   return (
     <div className="flex flex-row items-center justify-center min-h-svh gap-4">
+      <h1 className="text-2xl font-bold mr-8">Sort Visualizer</h1>
       <Select>
         <SelectTrigger className="w-[180px]">
           <SelectValue placeholder="Select algorithm" />
