@@ -28,6 +28,8 @@ interface AppState {
   randomArray: number[];
   isSorting: boolean;
   activeSortingFunction?: Generator<[number[], number[]]>;
+  sortedIndices: number[];
+  activeIndices: number[];
 }
 
 type AppAction =
@@ -35,13 +37,17 @@ type AppAction =
   | { type: 'SET_ALGORITHM'; payload: SortingAlgorithm }
   | { type: 'CHANGE_ARRAY_LENGTH'; payload: number }
   | { type: 'RANDOMIZE' }
-  | { type: 'SORT' };
+  | { type: 'SORT' }
+  | { type: 'FINISH_SORTING' }
+  | { type: 'SET_INDICES'; payload: { active: number[]; sorted: number[] } };
 
 const initialState: AppState = {
   speed: 1,
   algorithm: 'bubble',
   randomArray: getRandomElements(50),
   isSorting: false,
+  sortedIndices: [],
+  activeIndices: [],
 };
 
 function appReducer(state: AppState, action: AppAction): AppState {
@@ -60,6 +66,14 @@ function appReducer(state: AppState, action: AppAction): AppState {
         isSorting: true,
         activeSortingFunction:
           state.activeSortingFunction ?? getSortingFunction(state.algorithm)(state.randomArray),
+      };
+    case 'FINISH_SORTING':
+      return { ...state, isSorting: false };
+    case 'SET_INDICES':
+      return {
+        ...state,
+        sortedIndices: action.payload.sorted,
+        activeIndices: action.payload.active,
       };
     default:
       return state;
@@ -81,6 +95,24 @@ function getSortingFunction(algorithm: SortingAlgorithm) {
 
 function App() {
   const [state, dispatch] = useReducer(appReducer, initialState);
+
+  useEffect(() => {
+    async function sort() {
+      while (state.activeSortingFunction != null && state.isSorting) {
+        const {
+          done,
+          value: [active, sorted],
+        } = state.activeSortingFunction.next();
+        if (done) {
+          dispatch({ type: 'FINISH_SORTING' });
+          return;
+        }
+        dispatch({ type: 'SET_INDICES', payload: { active, sorted } });
+      }
+    }
+
+    sort();
+  }, [state.isSorting, state.activeSortingFunction]);
 
   //   useEffect(() => {
   //     let cancel = false;
