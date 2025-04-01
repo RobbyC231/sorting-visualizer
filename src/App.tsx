@@ -10,8 +10,8 @@ import {
 } from '@/components/ui/select';
 import { useEffect, useReducer } from 'react';
 import { bubbleSortGenerator } from './sortingAlgorithms/bubble';
-import { stat } from 'fs';
-import { log } from 'console';
+
+const OPERATIONS_PER_SECOND = 2;
 
 const SORTING_ALGORITHMS = [
   { value: 'bubble', label: 'Bubble Sort' },
@@ -70,7 +70,11 @@ function appReducer(state: AppState, action: AppAction): AppState {
           state.activeSortingFunction ?? getSortingFunction(state.algorithm)(state.randomArray),
       };
     case 'FINISH_SORTING':
-      return { ...state, isSorting: false };
+      return {
+        ...state,
+        isSorting: false,
+        activeSortingFunction: undefined,
+      };
     case 'SET_INDICES':
       return {
         ...state,
@@ -99,7 +103,6 @@ function getSortingFunction(algorithm: SortingAlgorithm) {
 
 function App() {
   const [state, dispatch] = useReducer(appReducer, initialState);
-  console.log({ state });
 
   useEffect(() => {
     async function sort() {
@@ -113,11 +116,14 @@ function App() {
           return;
         }
         dispatch({ type: 'SET_INDICES', payload: { active, sorted } });
+        await new Promise((resolve) =>
+          setTimeout(resolve, 1000 / OPERATIONS_PER_SECOND / state.speed)
+        );
       }
     }
 
     sort();
-  }, [state.isSorting, state.activeSortingFunction]);
+  }, [state.isSorting, state.activeSortingFunction, state.speed]);
 
   //   useEffect(() => {
   //     let cancel = false;
