@@ -117,22 +117,35 @@ function App() {
   ] = useReducer(appReducer, initialState);
 
   useEffect(() => {
+    let timeout: NodeJS.Timeout;
+    let cancel = false;
+
     async function sort() {
-      while (activeSortingFunction != null && isSorting) {
+      while (activeSortingFunction != null && isSorting && !cancel) {
+        console.log('sorting');
         const {
           done,
           value: [active, sorted],
         } = activeSortingFunction.next();
+
         if (done) {
           dispatch({ type: 'FINISH_SORTING' });
           return;
         }
+
         dispatch({ type: 'SET_INDICES', payload: { active, sorted } });
-        await new Promise((resolve) => setTimeout(resolve, 1000 / OPERATIONS_PER_SECOND / speed));
+        await new Promise(
+          (resolve) => (timeout = setTimeout(resolve, 1000 / OPERATIONS_PER_SECOND / speed))
+        );
       }
     }
 
     sort();
+
+    return () => {
+      clearTimeout(timeout);
+      cancel = true;
+    };
   }, [isSorting, activeSortingFunction, speed]);
 
   return (
@@ -165,6 +178,7 @@ function App() {
               className="w-[120px]"
               placeholder="Array size"
               value={randomArray.length}
+              disabled={isSorting}
               onChange={(e) =>
                 dispatch({ type: 'CHANGE_ARRAY_LENGTH', payload: Number(e.target.value) })
               }
@@ -187,7 +201,11 @@ function App() {
               >
                 {isSorting ? 'Stop' : 'Sort'}
               </Button>
-              <Button variant="outline" onClick={() => dispatch({ type: 'RANDOMIZE' })}>
+              <Button
+                disabled={isSorting}
+                variant="outline"
+                onClick={() => dispatch({ type: 'RANDOMIZE' })}
+              >
                 Randomize
               </Button>
             </div>
