@@ -10,6 +10,7 @@ import {
 } from '@/components/ui/select';
 import { useEffect, useReducer } from 'react';
 import { bubbleSortGenerator } from './sortingAlgorithms/bubble';
+import { cn } from '@/lib/utils';
 
 const OPERATIONS_PER_SECOND = 2;
 
@@ -125,36 +126,6 @@ function App() {
     sort();
   }, [state.isSorting, state.activeSortingFunction, state.speed]);
 
-  //   useEffect(() => {
-  //     let cancel = false;
-  //     let timeout: NodeJS.Timeout;
-  //     async function inner() {
-  //       while (activeSortingFunction != null && isSorting && !cancel) {
-  //         const {
-  //           done,
-  //           value: [active, sorted],
-  //         } = activeSortingFunction.next();
-
-  //         if (done) {
-  //           dispatch({ type: 'FINISH_SORTING' });
-  //           return;
-  //         }
-
-  //         dispatch({ type: 'SET_INDICES', payload: { active, sorted } });
-  //         await new Promise<void>((resolve) => {
-  //           timeout = setTimeout(resolve, 1000 / OPERATIONS_PER_SECOND / sortingSpeed);
-  //         });
-  //       }
-  //     }
-
-  //     inner();
-
-  //     return () => {
-  //       clearTimeout(timeout);
-  //       cancel = true;
-  //     };
-  //   }, [activeSortingFunction, sortingSpeed, isSorting]);
-
   return (
     <div className="flex flex-col h-screen">
       <header className="w-full bg-white border-b shadow-sm py-4 px-6 mb-4">
@@ -218,7 +189,11 @@ function App() {
         {state.randomArray.map((value, index) => (
           <div
             key={index}
-            className="grow flex items-end justify-center pb-2 bg-muted"
+            className={cn(
+              'grow flex items-end justify-center pb-2 bg-muted',
+              state.sortedIndices.includes(index) && 'bg-green-500',
+              state.activeIndices.includes(index) && 'bg-blue-500'
+            )}
             style={{ height: `${value}%` }}
           />
         ))}
