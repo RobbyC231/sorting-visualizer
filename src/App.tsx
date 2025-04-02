@@ -103,28 +103,37 @@ function getSortingFunction(algorithm: SortingAlgorithm) {
 }
 
 function App() {
-  const [state, dispatch] = useReducer(appReducer, initialState);
+  const [
+    {
+      speed,
+      algorithm,
+      randomArray,
+      isSorting,
+      activeSortingFunction,
+      sortedIndices,
+      activeIndices,
+    },
+    dispatch,
+  ] = useReducer(appReducer, initialState);
 
   useEffect(() => {
     async function sort() {
-      while (state.activeSortingFunction != null && state.isSorting) {
+      while (activeSortingFunction != null && isSorting) {
         const {
           done,
           value: [active, sorted],
-        } = state.activeSortingFunction.next();
+        } = activeSortingFunction.next();
         if (done) {
           dispatch({ type: 'FINISH_SORTING' });
           return;
         }
         dispatch({ type: 'SET_INDICES', payload: { active, sorted } });
-        await new Promise((resolve) =>
-          setTimeout(resolve, 1000 / OPERATIONS_PER_SECOND / state.speed)
-        );
+        await new Promise((resolve) => setTimeout(resolve, 1000 / OPERATIONS_PER_SECOND / speed));
       }
     }
 
     sort();
-  }, [state.isSorting, state.activeSortingFunction, state.speed]);
+  }, [isSorting, activeSortingFunction, speed]);
 
   return (
     <div className="flex flex-col h-screen">
@@ -133,7 +142,7 @@ function App() {
           <h1 className="text-xl font-bold">Sort Visualizer</h1>
           <div className="flex items-center gap-4">
             <Select
-              value={state.algorithm}
+              value={algorithm}
               onValueChange={(value) =>
                 dispatch({ type: 'SET_ALGORITHM', payload: value as SortingAlgorithm })
               }
@@ -155,7 +164,7 @@ function App() {
               max="400"
               className="w-[120px]"
               placeholder="Array size"
-              value={state.randomArray.length}
+              value={randomArray.length}
               onChange={(e) =>
                 dispatch({ type: 'CHANGE_ARRAY_LENGTH', payload: Number(e.target.value) })
               }
@@ -163,20 +172,20 @@ function App() {
             <div className="flex items-center gap-2 w-[200px]">
               <span className="text-sm">Speed:</span>
               <Slider
-                value={[state.speed]}
+                value={[speed]}
                 onValueChange={(value) => dispatch({ type: 'SET_SPEED', payload: value[0] })}
                 max={50}
                 step={1}
                 className="w-full"
               />
-              <span className="text-sm w-12">{state.speed}x</span>
+              <span className="text-sm w-12">{speed}x</span>
             </div>
             <div className="flex gap-2">
               <Button
-                onClick={() => dispatch({ type: state.isSorting ? 'STOP' : 'SORT' })}
-                variant={state.isSorting ? 'destructive' : 'default'}
+                onClick={() => dispatch({ type: isSorting ? 'STOP' : 'SORT' })}
+                variant={isSorting ? 'destructive' : 'default'}
               >
-                {state.isSorting ? 'Stop' : 'Sort'}
+                {isSorting ? 'Stop' : 'Sort'}
               </Button>
               <Button variant="outline" onClick={() => dispatch({ type: 'RANDOMIZE' })}>
                 Randomize
@@ -186,13 +195,13 @@ function App() {
         </div>
       </header>
       <main className="flex items-end w-full grow overflow-hidden">
-        {state.randomArray.map((value, index) => (
+        {randomArray.map((value, index) => (
           <div
             key={index}
             className={cn(
               'grow flex items-end justify-center pb-2 bg-muted',
-              state.sortedIndices.includes(index) && 'bg-green-500',
-              state.activeIndices.includes(index) && 'bg-blue-500'
+              sortedIndices.includes(index) && 'bg-green-500',
+              activeIndices.includes(index) && 'bg-blue-500'
             )}
             style={{ height: `${value}%` }}
           />
