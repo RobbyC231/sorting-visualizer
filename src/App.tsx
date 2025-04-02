@@ -14,6 +14,11 @@ import { cn } from '@/lib/utils';
 
 const OPERATIONS_PER_SECOND = 2;
 
+const ARRAY_SIZE_LIMITS = {
+  MIN: 1,
+  MAX: 400,
+} as const;
+
 const SORTING_ALGORITHMS = [
   { value: 'bubble', label: 'Bubble Sort' },
   { value: 'quick', label: 'Quick Sort' },
@@ -60,9 +65,29 @@ function appReducer(state: AppState, action: AppAction): AppState {
     case 'SET_ALGORITHM':
       return { ...state, algorithm: action.payload };
     case 'CHANGE_ARRAY_LENGTH':
-      return { ...state, randomArray: getRandomElements(action.payload) };
+      if (
+        action.payload < ARRAY_SIZE_LIMITS.MIN ||
+        action.payload > ARRAY_SIZE_LIMITS.MAX ||
+        isNaN(action.payload)
+      ) {
+        return state;
+      }
+
+      return {
+        ...state,
+        randomArray: getRandomElements(action.payload),
+        sortedIndices: [],
+        activeIndices: [],
+        activeSortingFunction: undefined,
+      };
     case 'RANDOMIZE':
-      return { ...state, randomArray: getRandomElements(state.randomArray.length) };
+      return {
+        ...state,
+        randomArray: getRandomElements(state.randomArray.length),
+        sortedIndices: [],
+        activeIndices: [],
+        activeSortingFunction: undefined,
+      };
     case 'SORT':
       return {
         ...state,
@@ -122,7 +147,6 @@ function App() {
 
     async function sort() {
       while (activeSortingFunction != null && isSorting && !cancel) {
-        console.log('sorting');
         const {
           done,
           value: [active, sorted],
@@ -159,6 +183,7 @@ function App() {
               onValueChange={(value) =>
                 dispatch({ type: 'SET_ALGORITHM', payload: value as SortingAlgorithm })
               }
+              disabled={isSorting}
             >
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Select algorithm" />
@@ -173,14 +198,14 @@ function App() {
             </Select>
             <Input
               type="number"
-              min="1"
-              max="400"
+              min={ARRAY_SIZE_LIMITS.MIN}
+              max={ARRAY_SIZE_LIMITS.MAX}
+              step={5}
               className="w-[120px]"
-              placeholder="Array size"
-              value={randomArray.length}
+              defaultValue={randomArray.length}
               disabled={isSorting}
               onChange={(e) =>
-                dispatch({ type: 'CHANGE_ARRAY_LENGTH', payload: Number(e.target.value) })
+                dispatch({ type: 'CHANGE_ARRAY_LENGTH', payload: e.target.valueAsNumber })
               }
             />
             <div className="flex items-center gap-2 w-[200px]">
@@ -189,6 +214,7 @@ function App() {
                 value={[speed]}
                 onValueChange={(value) => dispatch({ type: 'SET_SPEED', payload: value[0] })}
                 max={50}
+                min={1}
                 step={1}
                 className="w-full"
               />
