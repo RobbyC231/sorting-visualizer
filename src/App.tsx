@@ -14,43 +14,10 @@ import { cn } from '@/lib/utils';
 import { selectionSortGenerator } from './sortingAlgorithms/selection';
 import { insertionSortGenerator } from './sortingAlgorithms/insertion';
 import { mergeSortGenerator } from './sortingAlgorithms/merge';
+import { ARRAY_SIZE_LIMITS, SORTING_ALGORITHMS, SortingAlgorithm } from '@/types/sorting';
+import { AppState, AppAction } from '@/types/reducer';
 
 const OPERATIONS_PER_SECOND = 2;
-
-const ARRAY_SIZE_LIMITS = {
-  MIN: 1,
-  MAX: 400,
-} as const;
-
-const SORTING_ALGORITHMS = [
-  { value: 'bubble', label: 'Bubble Sort' },
-  { value: 'selection', label: 'Selection Sort' },
-  { value: 'insertion', label: 'Insertion Sort' },
-  { value: 'quick', label: 'Quick Sort' },
-  { value: 'merge', label: 'Merge Sort' },
-] as const;
-
-type SortingAlgorithm = (typeof SORTING_ALGORITHMS)[number]['value'];
-
-interface AppState {
-  speed: number;
-  algorithm: SortingAlgorithm;
-  randomArray: number[];
-  isSorting: boolean;
-  activeSortingFunction?: Generator<[number[], number[]]>;
-  sortedIndices: number[];
-  activeIndices: number[];
-}
-
-type AppAction =
-  | { type: 'SET_SPEED'; payload: number }
-  | { type: 'SET_ALGORITHM'; payload: SortingAlgorithm }
-  | { type: 'CHANGE_ARRAY_LENGTH'; payload: number }
-  | { type: 'RANDOMIZE' }
-  | { type: 'SORT' }
-  | { type: 'STOP' }
-  | { type: 'FINISH_SORTING' }
-  | { type: 'SET_INDICES'; payload: { active: number[]; sorted: number[] } };
 
 const initialState: AppState = {
   speed: 1,
