@@ -12,6 +12,7 @@ import { useEffect, useReducer } from 'react';
 import { bubbleSortGenerator } from './sortingAlgorithms/bubble';
 import { cn } from '@/lib/utils';
 import { selectionSortGenerator } from './sortingAlgorithms/selection';
+import { insertionSortGenerator } from './sortingAlgorithms/insertion';
 
 const OPERATIONS_PER_SECOND = 2;
 
@@ -67,6 +68,7 @@ function appReducer(state: AppState, action: AppAction): AppState {
       return {
         ...state,
         algorithm: action.payload,
+        randomArray: getRandomElements(state.randomArray.length),
         sortedIndices: [],
         activeIndices: [],
         activeSortingFunction: undefined,
@@ -132,6 +134,8 @@ function getSortingFunction(algorithm: SortingAlgorithm) {
       return bubbleSortGenerator;
     case 'selection':
       return selectionSortGenerator;
+    case 'insertion':
+      return insertionSortGenerator;
     default:
       throw new Error(`Invalid algorithm: ${algorithm}`);
   }
