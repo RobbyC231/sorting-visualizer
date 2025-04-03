@@ -9,13 +9,10 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import { useEffect, useReducer } from 'react';
-import { bubbleSortGenerator } from './sortingAlgorithms/bubble';
 import { cn } from '@/lib/utils';
-import { selectionSortGenerator } from './sortingAlgorithms/selection';
-import { insertionSortGenerator } from './sortingAlgorithms/insertion';
-import { mergeSortGenerator } from './sortingAlgorithms/merge';
 import { ARRAY_SIZE_LIMITS, SORTING_ALGORITHMS, SortingAlgorithm } from '@/types/sorting';
 import { AppState, AppAction } from '@/types/reducer';
+import { getRandomElements, getSortingFunction } from '@/utils/sorting';
 
 const OPERATIONS_PER_SECOND = 2;
 
@@ -89,25 +86,6 @@ function appReducer(state: AppState, action: AppAction): AppState {
       return { ...state, isSorting: false };
     default:
       return state;
-  }
-}
-
-function getRandomElements(arraySize: number) {
-  return Array.from({ length: arraySize }, () => Math.floor(Math.random() * 100) + 1);
-}
-
-function getSortingFunction(algorithm: SortingAlgorithm) {
-  switch (algorithm) {
-    case 'bubble':
-      return bubbleSortGenerator;
-    case 'selection':
-      return selectionSortGenerator;
-    case 'insertion':
-      return insertionSortGenerator;
-    case 'merge':
-      return mergeSortGenerator;
-    default:
-      throw new Error(`Invalid algorithm: ${algorithm}`);
   }
 }
 
