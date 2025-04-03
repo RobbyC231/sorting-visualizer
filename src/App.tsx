@@ -11,6 +11,7 @@ import {
 import { useEffect, useReducer } from 'react';
 import { bubbleSortGenerator } from './sortingAlgorithms/bubble';
 import { cn } from '@/lib/utils';
+import { selectionSortGenerator } from './sortingAlgorithms/selection';
 
 const OPERATIONS_PER_SECOND = 2;
 
@@ -21,10 +22,10 @@ const ARRAY_SIZE_LIMITS = {
 
 const SORTING_ALGORITHMS = [
   { value: 'bubble', label: 'Bubble Sort' },
+  { value: 'selection', label: 'Selection Sort' },
+  { value: 'insertion', label: 'Insertion Sort' },
   { value: 'quick', label: 'Quick Sort' },
   { value: 'merge', label: 'Merge Sort' },
-  { value: 'insertion', label: 'Insertion Sort' },
-  { value: 'selection', label: 'Selection Sort' },
 ] as const;
 
 type SortingAlgorithm = (typeof SORTING_ALGORITHMS)[number]['value'];
@@ -122,6 +123,8 @@ function getSortingFunction(algorithm: SortingAlgorithm) {
   switch (algorithm) {
     case 'bubble':
       return bubbleSortGenerator;
+    case 'selection':
+      return selectionSortGenerator;
     default:
       throw new Error(`Invalid algorithm: ${algorithm}`);
   }

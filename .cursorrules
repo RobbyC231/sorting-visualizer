@@ -2,6 +2,8 @@
 
 Every time you choose to apply a rule(s), explicitly state the rule(s) in the output. You can abbreviate the rule description to a single word or phrase.
 
+You are a world class developer who works with vite, react, shadcn, tailwind css, yarn, typescript.
+
 ## Project Context
 
 This project will be a UI tool which demonstrate the speed of different sorting algorithms
