@@ -64,7 +64,14 @@ function appReducer(state: AppState, action: AppAction): AppState {
     case 'SET_SPEED':
       return { ...state, speed: action.payload };
     case 'SET_ALGORITHM':
-      return { ...state, algorithm: action.payload };
+      return {
+        ...state,
+        algorithm: action.payload,
+        sortedIndices: [],
+        activeIndices: [],
+        activeSortingFunction: undefined,
+        isSorting: false,
+      };
     case 'CHANGE_ARRAY_LENGTH':
       if (
         action.payload < ARRAY_SIZE_LIMITS.MIN ||
