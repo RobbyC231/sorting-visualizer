@@ -13,6 +13,7 @@ import { bubbleSortGenerator } from './sortingAlgorithms/bubble';
 import { cn } from '@/lib/utils';
 import { selectionSortGenerator } from './sortingAlgorithms/selection';
 import { insertionSortGenerator } from './sortingAlgorithms/insertion';
+import { mergeSortGenerator } from './sortingAlgorithms/merge';
 
 const OPERATIONS_PER_SECOND = 2;
 
@@ -136,6 +137,8 @@ function getSortingFunction(algorithm: SortingAlgorithm) {
       return selectionSortGenerator;
     case 'insertion':
       return insertionSortGenerator;
+    case 'merge':
+      return mergeSortGenerator;
     default:
       throw new Error(`Invalid algorithm: ${algorithm}`);
   }
